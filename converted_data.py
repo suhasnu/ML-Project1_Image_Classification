@@ -44,7 +44,7 @@ def show_comparison(original, cleaned, label):
 #First we have to write main function!!
 def main():
     if len(sys.argv) < 7:
-        print("Enter enough arguments!")
+        print("Enter enough arguments")
         sys.exit(1)
         
     image_directory = sys.argv[1]
