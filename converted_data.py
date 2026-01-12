@@ -58,7 +58,7 @@ def main():
     #3.Create two empty lists: one to hold the pixel data (images) and one for the class numbers (labels)  
     # Get all files and sort them alphabatically!!
     all_images = sorted(os.listdir(image_directory))
-    random.shuffle(all_images)  
+    random.shuffle(all_images) #checking random images to ensure model is working correctly!! 
     images = []
     labels = []
     shown_count = 0
