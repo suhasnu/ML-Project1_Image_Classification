@@ -1,6 +1,7 @@
 import os
 import sys
-from PIL import Image 
+from PIL import Image
+import random 
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -56,7 +57,8 @@ def main():
     
     #3.Create two empty lists: one to hold the pixel data (images) and one for the class numbers (labels)  
     # Get all files and sort them alphabatically!!
-    all_images = sorted(os.listdir(image_directory))  
+    all_images = sorted(os.listdir(image_directory))
+    random.shuffle(all_images)  
     images = []
     labels = []
     shown_count = 0
