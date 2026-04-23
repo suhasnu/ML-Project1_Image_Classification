@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from sklearn.metrics import precision_score
-import matplotlib.pyplot as plt
+
 
 #load the data
 (X_train, y_train), (X_test, y_test) = keras.datasets.mnist.load_data()
