@@ -1,6 +1,8 @@
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
+from sklearn.metrics import precision_score
+import matplotlib.pyplot as plt
 
 #load the data
 (X_train, y_train), (X_test, y_test) = keras.datasets.mnist.load_data()
@@ -27,30 +29,39 @@ models = {
 
 #Train and evaluate
 def train_evaluate(name, model):
-  print(f"Model name{name}")
+  print(f"Model name {name}")
   model.compile(optimizer = "adam", loss = "categorical_crossentropy", metrics=["accuracy"])
   model.fit(X_train, y_train_one_hot, epochs = 10, batch_size = 256, verbose = 1)
   
   pred = model.predict(X_test, verbose = 0).argmax(axis=1)
   labels = y_test
   acc = (pred == labels).mean() * 100
-  print(f"Test accuracy: {acc:}%")
+  print(f"Test accuracy: {acc:.2f}%")
   np.savez(f"output_{name}.npz", pred = pred, labels = labels)
-  return pred, labels
+  
 
 
 #Overconfidence analysis
 
-def overconfidence(pred, labels, c):
-  mask = pred == c
-  precision = (labels[mask] == c).mean() if mask.any() else float("NAN")
-  print(f"Class {c}: {mask.sum()} predicted, {(labels[mask]==c).sum()} correct -> precison = {precision*100:.2f}%")
+def load_and_analysis_overconfidence(name, class_c):
+  data = np.load(f"output_{name}.npz")
+  pred = data["pred"]
+  labels = data["labels"]
   
-  return precision
+  precisions = precision_score(labels, pred, average = None)
+  print(f"[{name}] Class {class_c} precision: {precisions[class_c]*100:.2f}%")
+  
+  return precisions
+
 
 Class_C = 3
 
 for name, model, in models.items():
-  pred, labels = train_evaluate(name, model)
-  overconfidence(pred, labels, Class_C)
+  train_evaluate(name, model)
+  
+all_results = {}
+for name in models:
+    all_results[name] = load_and_analysis_overconfidence(name, Class_C)
+ 
+
   
