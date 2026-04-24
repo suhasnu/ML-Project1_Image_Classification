@@ -73,13 +73,6 @@ if __name__=="__main__":
   mse_0 = np.mean((test_digits0[:100] - ae.decoder(ae.encoder(test_digits0[:100])).numpy())**2, axis=1)
   mse_1 = np.mean((test_digits1[:100] - ae.decoder(ae.encoder(test_digits1[:100])).numpy())**2, axis=1)
   
-  """
-  thr = 0.05
-  plt.scatter(mse_0, mse_1)
-  plt.xlabel("inlier retension")
-  plt.ylabel("outlier rejection")
-  plt.show()
-  """
   
   thresholds = np.linspace(0, max(mse_0.max(), mse_1.max()), 100)
 
@@ -87,4 +80,5 @@ if __name__=="__main__":
               [np.mean(mse_1 >  t) * 100 for t in thresholds], s=10)
   plt.xlabel("inlier retention %")
   plt.ylabel("outlier rejection %")
+  plt.savefig("fig1.png")
   plt.show()
