@@ -10,7 +10,8 @@ import keras
 from keras import ops
 from keras import layers
 import matplotlib.pyplot as plt
-import sys ;
+import sys 
+from sklearn.preprocessing import MinMaxScaler
 
 latent_dim = 25
 EPOCHS = 100 ;
@@ -133,16 +134,31 @@ if __name__ == "__main__":
     vae.encoder.load_weights("vae_enc.weights.h5") ;
 
   # -------- you code here!
-
-  for digits, label in [(mnist_digits_test_0[:100], "Class 0"), (mnist_digits_test_1[:100], "Class 1")]:
-      z, _, _ = vae.encoder(digits)
-      fig, axes = plt.subplots(10, 10, figsize=(8, 8))
-      [ax.imshow(z[i].numpy().reshape(5, 5), cmap="gray") or ax.axis("off") for i, ax in enumerate(axes.flat)]
-      plt.suptitle(f"Latent Space - {label}") ; plt.show()
-
-  # Task 2: Generate 100 samples
-  generated = vae.decoder(np.random.normal(size=(100, latent_dim)).astype("float32")).numpy()
-  fig, axes = plt.subplots(10, 10, figsize=(10, 10))
-  [ax.imshow(generated[i].reshape(28, 28), cmap="gray") or ax.axis("off") for i, ax in enumerate(axes.flat)]
-  plt.suptitle("Generated Samples") ; plt.show()
   
+  def plot_latent_space(vae, digits, label, n=10):
+    z, _, _ = vae.encoder(digits[:100])
+    figure = z.numpy().reshape(n, n, 5, 5).transpose(0, 2, 1, 3).reshape(n*5, n*5)
+    plt.figure(figsize=(8,8))
+    plt.imshow(figure)
+    plt.title(label)
+    plt.savefig("latent_space.png")
+    plt.show()
+    
+  def plot_generated_samples(vae, n=10):
+    generated = vae.decoder(np.random.normal(size=(n*n, latent_dim)).astype("float32")).numpy()
+    figure = generated.reshape(n, n, 28, 28).transpose(0, 2, 1, 3).reshape(n*28, n*28)
+    plt.figure(figsize=(10, 10))
+    plt.imshow(figure, cmap="gray")
+    plt.title("Generated Samples")
+    plt.savefig("Samples.png")
+    plt.show()
+    
+  plot_latent_space(vae, mnist_digits_test_0, "Latent Space - Class 0")
+  plot_latent_space(vae, mnist_digits_test_1, "Latent Space - Class 1")
+  plot_generated_samples(vae)
+  
+    
+    
+        
+  
+
